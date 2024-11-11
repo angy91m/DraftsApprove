@@ -15,6 +15,12 @@
 	"drafts-view-existing": "Bozze esistenti",
 	"drafts-view-saved": "Salvata",
 	"drafts-view-discard": "Scarta",
+	"drafts-view-refuse": "Rifiuta",
+	"drafts-view-propose": "Proponi",
+	"drafts-view-approve": "Approva",
+	"drafts-view-refused": "Rifiutata",
+	"drafts-view-proposed": "Proposta",
+	"drafts-view-approved": "Approvata",
 	"drafts-view-nonesaved": "Non hai alcuna bozza salvata al momento.",
 	"drafts-view-notice": "Hai $1 per questa pagina.",
 	"drafts-view-notice-link": "$1 {{PLURAL:$1|bozza|bozze}}",
@@ -24,6 +30,7 @@
 	"drafts-save-saved": "Salvata",
 	"drafts-save-saving": "Salvataggio",
 	"drafts-save-error": "Errore nel salvataggio della bozza",
+	"drafts-page-save-error": "Errore nel salvataggio della pagina",
 	"drafts-enable": "Abilita la funzione per salvare una bozza nel modulo di modifica",
 	"prefs-extension-drafts": "Bozze",
 	"tooltip-drafts-save": "Salva come bozza",
@@ -39,7 +46,10 @@
 	"apihelp-savedrafts-param-text": "Testo della bozza.",
 	"apihelp-savedrafts-param-summary": "Riassunto della bozza.",
 	"apihelp-savedrafts-param-minoredit": "Booleano che specifica se la bozza è una modifica minore.",
+	"apierror-savedrafts-status-proposed": "Non puoi modificare una bozza proposta",
 	"apierror-mustbeloggedin-load-drafts": "Devi aver effettuato l'accesso per caricare le bozze.",
 	"apihelp-loaddrafts-summary": "Carica una bozza salvata in precedenza.",
-	"apihelp-loaddrafts-param-id": "L'ID della bozza."
+	"apihelp-loaddrafts-param-id": "L'ID della bozza.",
+	"apierror-approvedrafts-permissions": "Non hai i permessi per pubblicare una pagina.",
+	"apierror-must-be-draft-owner": "Non puoi salvare una bozza non tua."
 }

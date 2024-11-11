@@ -25,10 +25,12 @@ class ApiLoadDrafts extends ApiBase {
 
 		// Don't let users load others' drafts, only their own
 		if ( $draft->getUserID() !== $user->getId() ) {
-			$this->dieWithError(
-				'apierror-must-be-draft-owner',
-				'notowner'
-			);
+			if (!$user->isAllowed('drafts-approve') || $draft->getStatus() !== 'proposed') {
+				$this->dieWithError(
+					'apierror-must-be-draft-owner',
+					'notowner'
+				);
+			}
 		}
 
 		if ( !$draft->exists() ) {

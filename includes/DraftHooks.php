@@ -178,7 +178,9 @@ class DraftHooks {
 		}
 
 		$out = $context->getOutput();
-
+		$draft = Draft::newFromID( $request->getInt( 'draft', 0 ) );
+		$isDraftOwner = intval(!$draft->exists() || $draft->getUserID() === $user->getId());
+		$out->addHTML(Xml::element('input', ['id' => 'drafts-approve-is-draft-owner', 'type'=> 'hidden', 'name' => 'is-draft-owner', 'value' => "$isDraftOwner"]));
 		$numDrafts = Drafts::num( $context->getTitle() );
 		// Show list of drafts
 		if ( $numDrafts > 0 ) {
@@ -204,6 +206,24 @@ class DraftHooks {
 		}
 	}
 
+	/**
+	 * This is attached to the MediaWiki 'EditPage::attemptSave' hook.
+	 *
+	 * @param EditPage $editPage
+	 */
+	public static function onEditPage__attemptSave( $editPage ) {
+		$article = $editPage->getArticle();
+		$ctx = $article->getContext();
+		$user = $ctx->getUser();
+		$request = $ctx->getRequest();
+		if ( !$user->isAllowed('drafts-approve') ) {
+			$ctx->getOutput()->showErrorPage(
+				"drafts-page-save-error",
+				'apierror-approvedrafts-permissions'
+			);
+			return;
+		}
+	}
 	/**
 	 * This is attached to the MediaWiki 'EditPage::attemptSave:after' hook.
 	 * This method handles clicks on the "Save draft" button when the user has
@@ -248,6 +268,15 @@ class DraftHooks {
 		$text = $request->getText( 'wpTextbox1' );
 
 		$draft = Draft::newFromID( $request->getInt( 'wpDraftID', 0 ) );
+		if ($draft->exists()) {
+			if ($draft->getUserID() !== $user->getId()) {
+				$status->fatal('apierror-must-be-draft-owner');
+				return;
+			} else if ($draft->getStatus() === 'proposed') {
+				$status->fatal("apierror-savedrafts-status-proposed");
+				return;
+			}
+		}
 		$draft->setToken( $request->getRawVal( 'wpDraftToken' ) ?? '' );
 		// @todo FIXME: newFromText() *can* still return null and make Draft#save barf!
 		$draft->setTitle( Title::newFromText( $draftTitle ) );
@@ -259,6 +288,7 @@ class DraftHooks {
 		$draft->setText( $text );
 		$draft->setSummary( $request->getText( 'wpSummary' ) );
 		$draft->setMinorEdit( $request->getBool( 'wpMinoredit' ) );
+		$draft->setStatus('editing');
 
 		// Save draft (but only if it makes sense -- T21737)
 		if ( $text !== '' ) {
@@ -305,52 +335,56 @@ class DraftHooks {
 		if ( $user->isAllowed( 'edit' ) && $user->isRegistered() ) {
 			$request = $context->getRequest();
 			$context->getOutput()->addModules( 'ext.Drafts' );
-
-			$buttons['savedraft'] = new OOUI\ButtonInputWidget(
-				[
-					'name' => 'wpDraftSave',
-					'tabIndex' => ++$tabindex,
-					'id' => 'wpDraftWidget',
-					'inputId' => 'wpDraftSave',
-					'useInputTag' => true,
-					'flags' => [ 'progressive' ],
-					'label' => $context->msg( 'drafts-save-save' )->text(),
-					'infusable' => true,
-					'type' => 'submit',
-					'title' => Linker::titleAttrib( 'drafts-save' ),
-					'accessKey' => Linker::accesskey( 'drafts-save' ),
-					// Do NOT change this to true! This HAS to be false
-					// so that no-JS users can save drafts manually.
-					'disabled' => false
-				]
-			);
-			$buttons['savedraft'] .= new OOUI\HiddenInputWidget(
-				[
-					'name' => 'wpDraftToken',
-					'value' => MWCryptRand::generateHex( 32 )
-				]
-			);
-			$buttons['savedraft'] .= new OOUI\HiddenInputWidget(
-				[
-					'name' => 'wpDraftID',
-					'value' => $request->getInt( 'draft' )
-				]
-			);
-			$buttons['savedraft'] .= new OOUI\HiddenInputWidget(
-				[
-					'name' => 'wpDraftTitle',
-					'value' => $context->getTitle()->getPrefixedText()
-				]
-			);
-			// Will be used by the onEditPage__attemptSave_after hook handler to
-			// avoid unnecessary processing. The main JS file flips this to true
-			// for people who have JS enabled.
-			$buttons['savedraft'] .= new OOUI\HiddenInputWidget(
-				[
-					'name' => 'wpDraftJSEnabled',
-					'value' => false
-				]
-			);
+			$draft = Draft::newFromID($request->getInt( 'draft' ));
+			if (!$user->isAllowed('drafts-approve')) {
+				unset($buttons['save']);
+			} else if(!$draft->exists() || $draft->getUserID() === $user->getId()) {
+				$buttons['savedraft'] = new OOUI\ButtonInputWidget(
+					[
+						'name' => 'wpDraftSave',
+						'tabIndex' => ++$tabindex,
+						'id' => 'wpDraftWidget',
+						'inputId' => 'wpDraftSave',
+						'useInputTag' => true,
+						'flags' => [ 'progressive' ],
+						'label' => $context->msg( 'drafts-save-save' )->text(),
+						'infusable' => true,
+						'type' => 'submit',
+						'title' => Linker::titleAttrib( 'drafts-save' ),
+						'accessKey' => Linker::accesskey( 'drafts-save' ),
+						// Do NOT change this to true! This HAS to be false
+						// so that no-JS users can save drafts manually.
+						'disabled' => false
+					]
+				);
+				$buttons['savedraft'] .= new OOUI\HiddenInputWidget(
+					[
+						'name' => 'wpDraftToken',
+						'value' => MWCryptRand::generateHex( 32 )
+					]
+				);
+				$buttons['savedraft'] .= new OOUI\HiddenInputWidget(
+					[
+						'name' => 'wpDraftID',
+						'value' => $request->getInt( 'draft' )
+					]
+				);
+				$buttons['savedraft'] .= new OOUI\HiddenInputWidget(
+					[
+						'name' => 'wpDraftTitle',
+						'value' => $context->getTitle()->getPrefixedText()
+					]
+				);
+				// Will be used by the onEditPage__attemptSave_after hook handler to
+				// avoid unnecessary processing. The main JS file flips this to true
+				// for people who have JS enabled.
+				$buttons['savedraft'] .= new OOUI\HiddenInputWidget(
+					[
+						'name' => 'wpDraftJSEnabled',
+						'value' => false
+					]
+				);
+			}
 		}
 	}
 

@@ -37,6 +37,8 @@ class Draft {
 	private $summary;
 	/** @var bool */
 	private $minoredit;
+	/** @var string */
+	private $status;
 
 	/**
 	 * Creates a new Draft object from a draft ID
@@ -69,6 +71,7 @@ class Draft {
 		$draft->setText( $row->draft_text );
 		$draft->setSummary( $row->draft_summary );
 		$draft->setMinorEdit( $row->draft_minoredit );
+		$draft->setStatus( $row->draft_status );
 		return $draft;
 	}
 
@@ -251,6 +254,21 @@ class Draft {
 		$this->minoredit = $minoredit;
 	}
 
+	/**
+	 * @return string Status of draft
+	 */
+	public function getStatus() {
+		return $this->status;
+	}
+
+	/**
+	 * Sets status of draft
+	 * @param string $status
+	 */
+	public function setStatus( $status ) {
+		$this->status = $status;
+	}
+
 	/* Functions */
 
 	/**
@@ -309,6 +327,7 @@ class Draft {
 		$this->text = $row->draft_text;
 		$this->summary = $row->draft_summary;
 		$this->minoredit = $row->draft_minoredit;
+		$this->status = $row->draft_status;
 		// Updates state
 		$this->exists = true;
 	}
@@ -336,7 +355,8 @@ class Draft {
 			'draft_scrolltop' => (int)$this->scrolltop,
 			'draft_text' => (string)$this->text,
 			'draft_summary' => (string)$this->summary,
-			'draft_minoredit' => (int)$this->minoredit
+			'draft_minoredit' => (int)$this->minoredit,
+			'draft_status' => (string)$this->status
 		];
 		// Checks if draft already exists
 		if ( $this->exists === true ) {

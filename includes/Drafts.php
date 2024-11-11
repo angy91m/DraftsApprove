@@ -26,9 +26,10 @@ abstract class Drafts {
 	 *
 	 * @param Title|null $title Title of article, defaults to all articles
 	 * @param int|null $userID ID of user, defaults to current user
+	 * @param string|null $draftStatus ID of user, defaults all statuses
 	 * @return int Number of drafts which match condition parameters
 	 */
-	public static function num( $title = null, $userID = null ) {
+	public static function num( $title = null, $userID = null, $draftStatus = null ) {
 		// Get database connection
 		$dbr = MediaWikiServices::getInstance()->getDBLoadBalancer()->getConnection( DB_REPLICA );
 
@@ -63,6 +64,12 @@ abstract class Drafts {
 		} else {
 			// Adds current user as condition
 			$where['draft_user'] = RequestContext::getMain()->getUser()->getId();
+		}
+
+		// Checks if specific draftStatus was given
+		if ( $draftStatus !== null ) {
+			// Adds specific draftStatus to condition
+			$where['draft_status'] = $draftStatus;
 		}
 
 		// Get a list of matching drafts
@@ -120,10 +127,11 @@ abstract class Drafts {
 	 * Gets a list of existing drafts for a specific user
 	 *
 	 * @param Title|null $title Title of article, defaults to all articles
-	 * @param int|null $userID ID of user, defaults to current user
+	 * @param int|null|bool $userID ID of user, defaults to current user
+	 * @param string|null $draftStatus ID of user, defaults all statuses
 	 * @return Draft[]|null
 	 */
-	public static function get( $title = null, $userID = null ) {
+	public static function get( $title = null, $userID = null, $draftStatus = null ) {
 		// Removes expired drafts for a more accurate list
 		self::clean();
 
@@ -152,13 +160,20 @@ abstract class Drafts {
 			}
 		}
 
-		// Checks if a specific user was given
-		if ( $userID !== null ) {
-			// Adds specific user to conditions
-			$where['draft_user'] = $userID;
-		} else {
-			// Adds current user to conditions
-			$where['draft_user'] = RequestContext::getMain()->getUser()->getId();
+		if ($userID !== true) {
+			// Checks if a specific user was given
+			if ( $userID !== null ) {
+				// Adds specific user to conditions
+				$where['draft_user'] = $userID;
+			} else {
+				// Adds current user to conditions
+				$where['draft_user'] = RequestContext::getMain()->getUser()->getId();
+			}
+		}
+		// Checks if specific draftStatus was given
+		if ( $draftStatus !== null ) {
+			// Adds specific draftStatus to condition
+			$where['draft_status'] = $draftStatus;
 		}
 
 		// Gets matching drafts from database

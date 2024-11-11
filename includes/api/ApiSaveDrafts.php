@@ -18,6 +18,19 @@ class ApiSaveDrafts extends ApiBase {
 		$params = $this->extractRequestParams();
 
 		$draft = Draft::newFromID( $params['id'] );
+		// Don't let users save others' drafts, only their own
+		if ( $draft->exists() ) {
+			if ($draft->getUserID() !== $user->getId()) {
+				$this->dieWithError(
+					'apierror-must-be-draft-owner',
+					'notowner'
+				);
+			} else if ($draft->getStatus() === 'proposed') {
+				$this->dieWithError(
+					"apierror-savedrafts-status-proposed"
+				);
+			}
+		}
 		$draft->setToken( $params['drafttoken'] );
 		$draft->setTitle( Title::newFromText( $params['title'] ) );
 		$draft->setSection( $params['section'] == '' ? null : $params['section'] );
@@ -28,6 +41,7 @@ class ApiSaveDrafts extends ApiBase {
 		$draft->setText( $params['text'] );
 		$draft->setSummary( $params['summary'] );
 		$draft->setMinorEdit( $params['minoredit'] );
+		$draft->setStatus('editing');
 		$draft->save();
 
 		$this->getResult()->addValue(
