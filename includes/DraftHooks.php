@@ -227,6 +227,12 @@ class DraftHooks {
 			);
 			return;
 		}
+		if ($request->getText('wpSave') !== '') {
+			$draft = Draft::newFromID($request->getInt('wpDraftID', 0));
+			if ($draft->exists()) {
+				$ctx->setUser(User::newFromId($draft->getUserID()));
+			}
+		}
 	}
 	/**
 	 * This is attached to the MediaWiki 'EditPage::attemptSave:after' hook.
