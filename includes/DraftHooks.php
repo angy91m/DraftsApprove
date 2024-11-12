@@ -338,10 +338,21 @@ class DraftHooks {
 			$context->getOutput()->addModules( 'ext.Drafts' );
 			$draft = Draft::newFromID($request->getInt( 'draft' ));
 			if (!$user->isAllowed('drafts-approve')) {
-				$buttons['save']->setData([
+				$buttons['save'] = new OOUI\ButtonInputWidget( [
 					'name' => 'wpDraftPropose',
-					'label' => $context->msg( 'drafts-view-propose' )->text()
-				]);
+					'tabIndex' => 4,
+					'id' => 'wpSaveWidget',
+					'inputId' => 'wpDraftPropose',
+					'useInputTag' => true,
+					'flags' => [ 'progressive', 'primary' ],
+					'label' => $context->msg( 'drafts-view-propose' )->text(),
+					'infusable' => true,
+					'type' => 'submit',
+					// Messages used: tooltip-save, tooltip-publish
+					'title' => Linker::titleAttrib( 's' ),
+					// Messages used: accesskey-save, accesskey-publish
+					'accessKey' => Linker::accesskey( 's' ),
+				] );
 			}
 			if(!$draft->exists() || $draft->getUserID() === $user->getId()) {
 				$buttons['savedraft'] = new OOUI\ButtonInputWidget(
