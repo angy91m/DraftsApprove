@@ -34,11 +34,9 @@ abstract class Drafts {
 		$dbr = MediaWikiServices::getInstance()->getDBLoadBalancer()->getConnection( DB_REPLICA );
 
 		// Builds where clause
-		// $where = [
-		// 	'draft_savetime > ' . $dbr->addQuotes(
-		// 		$dbr->timestamp( self::getDraftAgeCutoff() )
-		// 	)
-		// ];
+		$where = [
+			'draft_status <> ""'
+		];
 
 		// Checks if a specific title was given
 		if ( $title !== null ) {
@@ -83,7 +81,7 @@ abstract class Drafts {
 	 * by $egDraftsCleanRatio
 	 */
 	public static function clean() {
-		// global $egDraftsCleanRatio;
+		global $egDraftsCleanRatio;
 
 		// // Only perform this action a fraction of the time
 		// if ( rand( 0, $egDraftsCleanRatio ) == 0 ) {
@@ -100,6 +98,17 @@ abstract class Drafts {
 		// 		__METHOD__
 		// 	);
 		// }
+		
+		if ( rand( 0, $egDraftsCleanRatio ) == 0 ) {
+			$dbw = MediaWikiServices::getInstance()->getDBLoadBalancer()->getConnection( DB_PRIMARY );
+			// Removes expired drafts from database
+			$dbw->delete( 'drafts',
+				[
+					'draft_status = ""'
+				],
+				__METHOD__
+			);
+		}
 	}
 
 	/**
@@ -141,11 +150,9 @@ abstract class Drafts {
 		$dbw = MediaWikiServices::getInstance()->getDBLoadBalancer()->getConnection( DB_PRIMARY );
 
 		// Builds where clause
-		// $where = [
-		// 	'draft_savetime > ' . $dbw->addQuotes(
-		// 		$dbw->timestamp( self::getDraftAgeCutoff() )
-		// 	)
-		// ];
+		$where = [
+			'draft_status <> ""'
+		];
 
 		// Checks if specific title was given
 		if ( $title !== null ) {
