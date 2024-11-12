@@ -254,23 +254,20 @@ abstract class Drafts {
 				$urlLoad = $draft->getTitle()->getFullURL(
 					'action=edit&draft=' . urlencode( (string)$draft->getID() ) . ($approvePage ? '&wpApproveView=1' : '')
 				);
-				if ($approvePage) {
-					// Build refuse link
-					$urlRefuse = SpecialPage::getTitleFor( 'Drafts to approve' )->getFullURL(
-						sprintf( 'refuse=%s&token=%s',
-							urlencode( (string)$draft->getID() ),
-							urlencode( $editToken )
-						)
-					);
-				} else {
-					// Build discard link
-					$urlDiscard = SpecialPage::getTitleFor( 'Drafts' )->getFullURL(
-						sprintf( 'discard=%s&token=%s',
-							urlencode( (string)$draft->getID() ),
-							urlencode( $editToken )
-						)
-					);
-				}
+				// Build refuse link
+				$urlRefuse = SpecialPage::getTitleFor( 'Drafts to approve' )->getFullURL(
+					sprintf( 'refuse=%s&token=%s',
+						urlencode( (string)$draft->getID() ),
+						urlencode( $editToken )
+					)
+				);
+				// Build discard link
+				$urlDiscard = SpecialPage::getTitleFor( 'Drafts' )->getFullURL(
+					sprintf( 'discard=%s&token=%s',
+						urlencode( (string)$draft->getID() ),
+						urlencode( $editToken )
+					)
+				);
 				// If in edit mode, return to editor
 				if (
 					$wgRequest->getRawVal( 'action' ) === 'edit' ||
