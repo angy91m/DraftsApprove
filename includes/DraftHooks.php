@@ -181,7 +181,7 @@ class DraftHooks {
 		$draft = Draft::newFromID( $request->getInt( 'draft', 0 ) );
 		$isDraftOwner = intval(!$draft->exists() || $draft->getUserID() === $user->getId());
 		$out->addHTML(Xml::element('input', ['id' => 'drafts-approve-is-draft-owner', 'type'=> 'hidden', 'name' => 'is-draft-owner', 'value' => "$isDraftOwner"]));
-		if ($request->getInt('wpApproveView') === 1) {
+		if ($request->getInt('wpApproveView') === 1 && $user->isAllowed('drafts-approve')) {
 			$numDrafts = Drafts::num( $context->getTitle(), true, 'proposed' );
 		} else {
 			$numDrafts = Drafts::num( $context->getTitle() );
@@ -195,7 +195,11 @@ class DraftHooks {
 				$out->addHTML( Xml::element(
 					'h3', null, $context->msg( 'drafts-view-existing' )->text() )
 				);
-				$out->addHTML( Drafts::display( $context->getTitle() ) );
+				if ($request->getInt('wpApproveView') === 1 && $user->isAllowed('drafts-approve')) {
+					$out->addHTML( Drafts::display( $context->getTitle(), true, 'proposed' ) );
+				} else {
+					$out->addHTML( Drafts::display( $context->getTitle() ) );
+				}
 				$out->addHTML( Xml::closeElement( 'div' ) );
 			} else {
 				$link = Xml::element( 'a',
