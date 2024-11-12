@@ -377,7 +377,8 @@ class Draft {
 					'draft_user' => $data['draft_user'],
 					'draft_namespace' => $data['draft_namespace'],
 					'draft_title' => $data['draft_title'],
-					'draft_token' => $data['draft_token']
+					'draft_token' => $data['draft_token'],
+					'draft_status' => $data['draft_status']
 				],
 				__METHOD__
 			);
@@ -418,5 +419,25 @@ class Draft {
 		);
 		// Updates state
 		$this->exists = false;
+	}
+
+	/**
+	 * Set draft row status to 'refused'
+	 * @param UserIdentity|null $user User object, defaults to current user
+	 */
+	public function refuse( $user = null ) {
+		// Uses RequestContext user as a fallback
+		$user = $user === null ? RequestContext::getMain()->getUser() : $user;
+		// Gets database connection
+		$dbw = MediaWikiServices::getInstance()->getDBLoadBalancer()->getConnection( DB_PRIMARY );
+		$dbw->update(
+			'drafts',
+			[
+				'draft_id' => $this->id,
+				'draft_user' => $user->getId(),
+				'status' => 'refused'
+			],
+			__METHOD__
+		);
 	}
 }
