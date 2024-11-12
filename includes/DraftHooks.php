@@ -249,7 +249,7 @@ class DraftHooks {
 
 		// This is a no-JS endpoint, no need to do anything here for users w/
 		// JS enabled.
-		if ( $request->getBool( 'wpDraftJSEnabled' ) ) {
+		if ( $request->getBool( 'wpDraftJSEnabled' ) && empty($request->getText( 'wpDraftPropose' )) ) {
 			return;
 		}
 
@@ -288,7 +288,7 @@ class DraftHooks {
 		$draft->setText( $text );
 		$draft->setSummary( $request->getText( 'wpSummary' ) );
 		$draft->setMinorEdit( $request->getBool( 'wpMinoredit' ) );
-		$draft->setStatus('editing');
+		$draft->setStatus($request->getText( 'wpDraftPropose' ) !== '' ? 'proposed' : 'editing');
 
 		// Save draft (but only if it makes sense -- T21737)
 		if ( $text !== '' ) {
@@ -308,7 +308,8 @@ class DraftHooks {
 	 */
 	public static function onEditFilter( EditPage $editor, $text, $section, &$error ) {
 		// Don't save if the save draft button caused the submit
-		if ( $editor->getArticle()->getContext()->getRequest()->getText( 'wpDraftSave' ) !== '' ) {
+		$request = $editor->getArticle()->getContext()->getRequest();
+		if ( $request->getText( 'wpDraftSave' ) !== '' || $request->getText( 'wpDraftPropose' ) !== '' ) {
 			// Modify the error so it's clear we want to remain in edit mode
 			$error = ' ';
 		}
@@ -337,7 +338,8 @@ class DraftHooks {
 			$context->getOutput()->addModules( 'ext.Drafts' );
 			$draft = Draft::newFromID($request->getInt( 'draft' ));
 			if (!$user->isAllowed('drafts-approve')) {
-				unset($buttons['save']);
+				$buttons['save']->setName('wpDraftPropose');
+				$buttons['save']->setLabel($context->msg( 'drafts-view-propose' )->text());
 			}
 			if(!$draft->exists() || $draft->getUserID() === $user->getId()) {
 				$buttons['savedraft'] = new OOUI\ButtonInputWidget(
