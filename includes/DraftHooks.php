@@ -338,7 +338,8 @@ class DraftHooks {
 			$draft = Draft::newFromID($request->getInt( 'draft' ));
 			if (!$user->isAllowed('drafts-approve')) {
 				unset($buttons['save']);
-			} else if(!$draft->exists() || $draft->getUserID() === $user->getId()) {
+			}
+			if(!$draft->exists() || $draft->getUserID() === $user->getId()) {
 				$buttons['savedraft'] = new OOUI\ButtonInputWidget(
 					[
 						'name' => 'wpDraftSave',
@@ -384,6 +385,8 @@ class DraftHooks {
 						'value' => false
 					]
 				);
+			} else {
+				$buttons['save']->setLabel($context->msg("drafts-view-approve")->text());
 			}
 		}
 	}
