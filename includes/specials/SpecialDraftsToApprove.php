@@ -34,7 +34,7 @@ class SpecialDraftsToApprove extends SpecialPage {
 		// Make sure the user is logged in
 		$this->requireLogin();
         if (!$user->isAllowed('drafts-approve')) {
-            $out->addWikiTextAsInterface( 'permissiondenied' );
+			$out->addWikiMsg('permissiondenied');
             return;
         }
 
