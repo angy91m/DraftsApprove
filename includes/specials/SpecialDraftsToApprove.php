@@ -74,7 +74,7 @@ class SpecialDraftsToApprove extends SpecialPage {
 					$this->getLanguage()->formatNum( $egDraftsLifeSpan )
 				]
 			);
-			$out->addHTML( Drafts::display(null, true, 'proposed') );
+			$out->addHTML( Drafts::display(null, true, 'proposed', true) );
 		}
 	}
 
