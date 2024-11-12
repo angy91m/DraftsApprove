@@ -53,7 +53,7 @@
 		"Draft": "includes/Draft.php",
 		"DraftHooks": "includes/DraftHooks.php",
 		"SpecialDrafts": "includes/specials/SpecialDrafts.php",
-		"SpecialDraftsToApprove": "includes/specials/SpecialDrafts.php"
+		"SpecialDraftsToApprove": "includes/specials/SpecialDraftsToApprove.php"
 	},
 	"APIModules": {
 		"loaddrafts": "ApiLoadDrafts",
