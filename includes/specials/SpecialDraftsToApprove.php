@@ -8,7 +8,7 @@
 
 class SpecialDraftsToApprove extends SpecialPage {
 	public function __construct() {
-		parent::__construct( 'DraftsToApprove' );
+		parent::__construct( 'Drafts To Approve' );
 	}
 
 	public function doesWrites() {

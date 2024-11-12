@@ -8,7 +8,7 @@
 		]
 	},
 	"drafts": "Bozze",
-	"drafts-to-approve": "Bozze da approvare",
+	"draftstoapprove": "Bozze da approvare",
 	"drafts-desc": "Aggiunge la possibilità di salvare versioni di [[Special:Drafts|bozza]] di una pagina sul server",
 	"drafts-view": "VisualizzaBozza",
 	"drafts-view-summary": "Questa pagina speciale mostra un elenco delle bozze esistenti. Le bozze non usate verranno cancellate automaticamente dopo {{PLURAL:$1|$1 giorno|$1 giorni}}.",
