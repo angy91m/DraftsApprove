@@ -184,7 +184,6 @@ abstract class Drafts {
 		if ( $result ) {
 			// Creates an array of matching drafts
 			foreach ( $result as $row ) {
-				hSaveTest($row);
 				// Adds a new draft to the list from the row
 				$drafts[] = Draft::newFromRow( $row );
 			}
@@ -200,9 +199,10 @@ abstract class Drafts {
 	 * @param Title|null $title Title of article, defaults to all articles
 	 * @param int|null|bool $userID ID of user, defaults to current user
 	 * @param string|null $draftStatus ID of user, defaults all statuses
+	 * @param bool $approvePage if user is in DraftsToApprove page
 	 * @return string HTML to be shown to the user
 	 */
-	public static function display( $title = null, $userID = null, $draftStatus = null ) {
+	public static function display( $title = null, $userID = null, $draftStatus = null, $approvePage = false ) {
 		global $wgRequest;
 
 		// Gets draftID
@@ -252,11 +252,18 @@ abstract class Drafts {
 				$htmlTitle = htmlspecialchars( $draft->getTitle()->getPrefixedText() );
 				// Build Article Load link
 				$urlLoad = $draft->getTitle()->getFullURL(
-					'action=edit&draft=' . urlencode( (string)$draft->getID() )
+					'action=edit&draft=' . urlencode( (string)$draft->getID() ) . ($approvePage ? '&wpApproveView=1' : '')
 				);
 				// Build discard link
 				$urlDiscard = SpecialPage::getTitleFor( 'Drafts' )->getFullURL(
 					sprintf( 'discard=%s&token=%s',
+						urlencode( (string)$draft->getID() ),
+						urlencode( $editToken )
+					)
+				);
+				// Build refuse link
+				$urlRefuse = SpecialPage::getTitleFor( 'Drafts' )->getFullURL(
+					sprintf( 'refuse=%s&token=%s',
 						urlencode( (string)$draft->getID() ),
 						urlencode( $editToken )
 					)
@@ -267,6 +274,7 @@ abstract class Drafts {
 					$wgRequest->getRawVal( 'action' ) === 'submit'
 				) {
 					$urlDiscard .= '&returnto=' . urlencode( 'edit' );
+					$urlRefuse .= '&returnto=' . urlencode( 'edit' );
 				}
 				// Append section to titles and links
 				if ( $draft->getSection() !== null ) {
@@ -282,6 +290,8 @@ abstract class Drafts {
 					// Modify article link and title
 					$urlLoad .= '&section=' . urlencode( (string)$draft->getSection() );
 					$urlDiscard .= '&section=' .
+						urlencode( (string)$draft->getSection() );
+					$urlRefuse .= '&section=' .
 						urlencode( (string)$draft->getSection() );
 				}
 				// Build XML
@@ -312,10 +322,10 @@ abstract class Drafts {
 				$html .= Xml::openElement( 'td' );
 				$html .= Xml::element( 'a',
 					[
-						'href' => $urlDiscard,
+						'href' => $approvePage ? $urlRefuse : $urlDiscard,
 						'class' => 'mw-discard-draft-link'
 					],
-					wfMessage( 'drafts-view-discard' )->text()
+					wfMessage('drafts-view-' . ($approvePage? 'refuse' : 'discard') )->text()
 				);
 				$html .= Xml::closeElement( 'td' );
 				$html .= Xml::closeElement( 'tr' );
