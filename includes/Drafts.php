@@ -102,7 +102,10 @@ abstract class Drafts {
 		if ( rand( 0, $egDraftsCleanRatio ) == 0 ) {
 			$dbw = MediaWikiServices::getInstance()->getDBLoadBalancer()->getConnection( DB_PRIMARY );
 			// Removes expired drafts from database
-			$dbw->delete( 'drafts',
+			$dbw->update( 'drafts',
+				[
+					'draft_status = "editing"'
+				],
 				[
 					'draft_status = ""'
 				],
