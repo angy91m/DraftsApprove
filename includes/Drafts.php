@@ -34,11 +34,11 @@ abstract class Drafts {
 		$dbr = MediaWikiServices::getInstance()->getDBLoadBalancer()->getConnection( DB_REPLICA );
 
 		// Builds where clause
-		$where = [
-			'draft_savetime > ' . $dbr->addQuotes(
-				$dbr->timestamp( self::getDraftAgeCutoff() )
-			)
-		];
+		// $where = [
+		// 	'draft_savetime > ' . $dbr->addQuotes(
+		// 		$dbr->timestamp( self::getDraftAgeCutoff() )
+		// 	)
+		// ];
 
 		// Checks if a specific title was given
 		if ( $title !== null ) {
@@ -83,23 +83,23 @@ abstract class Drafts {
 	 * by $egDraftsCleanRatio
 	 */
 	public static function clean() {
-		global $egDraftsCleanRatio;
+		// global $egDraftsCleanRatio;
 
-		// Only perform this action a fraction of the time
-		if ( rand( 0, $egDraftsCleanRatio ) == 0 ) {
-			// Get database connection
-			$dbw = MediaWikiServices::getInstance()->getDBLoadBalancer()->getConnection( DB_PRIMARY );
-			// Removes expired drafts from database
-			$dbw->delete( 'drafts',
-				[
-					'draft_savetime < ' .
-						$dbw->addQuotes(
-							$dbw->timestamp( self::getDraftAgeCutoff() )
-						)
-				],
-				__METHOD__
-			);
-		}
+		// // Only perform this action a fraction of the time
+		// if ( rand( 0, $egDraftsCleanRatio ) == 0 ) {
+		// 	// Get database connection
+		// 	$dbw = MediaWikiServices::getInstance()->getDBLoadBalancer()->getConnection( DB_PRIMARY );
+		// 	// Removes expired drafts from database
+		// 	$dbw->delete( 'drafts',
+		// 		[
+		// 			'draft_savetime < ' .
+		// 				$dbw->addQuotes(
+		// 					$dbw->timestamp( self::getDraftAgeCutoff() )
+		// 				)
+		// 		],
+		// 		__METHOD__
+		// 	);
+		// }
 	}
 
 	/**
@@ -141,11 +141,11 @@ abstract class Drafts {
 		$dbw = MediaWikiServices::getInstance()->getDBLoadBalancer()->getConnection( DB_PRIMARY );
 
 		// Builds where clause
-		$where = [
-			'draft_savetime > ' . $dbw->addQuotes(
-				$dbw->timestamp( self::getDraftAgeCutoff() )
-			)
-		];
+		// $where = [
+		// 	'draft_savetime > ' . $dbw->addQuotes(
+		// 		$dbw->timestamp( self::getDraftAgeCutoff() )
+		// 	)
+		// ];
 
 		// Checks if specific title was given
 		if ( $title !== null ) {
