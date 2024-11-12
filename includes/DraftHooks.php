@@ -219,6 +219,7 @@ class DraftHooks {
 	}
 
 	public function visualEditorBeforeInitialize( &$title, $unused, $output, $user, $request, $mediawiki ) {
+		hSaveTest($title);
 		if ( $request->getVal( 'veaction' ) && !$user->isAllowed('drafts-approve') ) {
 			$output->showErrorPage("apierror-approvedrafts-permissions");
 			return false;
