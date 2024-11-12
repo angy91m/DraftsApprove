@@ -428,6 +428,9 @@ class Draft {
 	public function refuse( $user = null ) {
 		// Uses RequestContext user as a fallback
 		$user = $user === null ? RequestContext::getMain()->getUser() : $user;
+		if(!$user->isAllowed('drafts-approve')) {
+			return;
+		}
 		// Gets database connection
 		$dbw = MediaWikiServices::getInstance()->getDBLoadBalancer()->getConnection( DB_PRIMARY );
 		$dbw->update(
