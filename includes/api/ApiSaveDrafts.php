@@ -8,7 +8,8 @@
  */
 class ApiSaveDrafts extends ApiBase {
 	public function execute() {
-		if ( $this->getUser()->isAnon() ) {
+		$user = $this->getUser();
+		if ( $user->isAnon() ) {
 			$this->dieWithError(
 				'apierror-mustbeloggedin-save-drafts',
 				'notloggedin'
