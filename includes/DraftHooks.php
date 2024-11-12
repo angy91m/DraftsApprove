@@ -218,6 +218,13 @@ class DraftHooks {
 		}
 	}
 
+	public function onVisualEditorAttemptSave( $page, $user, $wikitext, &$params, $pluginData, &$apiResponse ) {
+		if (!$user->isAllowed('drafts-approve')) {
+			$apiResponse['message'] = ['apierror-approvedrafts-permissions'];
+			return false;
+		}
+	}
+
 	/**
 	 * This is attached to the MediaWiki 'EditPage::attemptSave' hook.
 	 *
