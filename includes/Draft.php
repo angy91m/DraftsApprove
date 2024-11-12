@@ -295,7 +295,6 @@ class Draft {
 			// Exists immediately
 			return;
 		}
-		$userId = RequestContext::getMain()->getUser()->getId();
 		// Gets database connection
 		$dbw = MediaWikiServices::getInstance()->getDBLoadBalancer()->getConnection( DB_PRIMARY );
 		// Gets drafts for this article and user from database
@@ -303,8 +302,7 @@ class Draft {
 			'drafts',
 			[ '*' ],
 			[
-				'draft_id' => (int)$this->id,
-				'draft_user' => $userId
+				'draft_id' => (int)$this->id
 			],
 			__METHOD__
 		);
