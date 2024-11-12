@@ -182,11 +182,13 @@ abstract class Drafts {
 		$result = $dbw->select( 'drafts', '*', $where, __METHOD__ );
 		$drafts = [];
 		if ( $result ) {
+			hSaveTest($result);
 			// Creates an array of matching drafts
 			foreach ( $result as $row ) {
 				// Adds a new draft to the list from the row
 				$drafts[] = Draft::newFromRow( $row );
 			}
+			hSaveTest($drafts,1);
 		}
 
 		// Returns array of matching drafts or null if there were none
