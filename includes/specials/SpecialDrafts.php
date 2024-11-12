@@ -46,13 +46,13 @@ class SpecialDrafts extends SpecialPage {
 				case 'edit':
 					$title = Title::newFromDBKey( $draft->getTitle() );
 					$out->redirect(
-						wfExpandURL( $title->getEditURL() . $urlSection )
+						wfExpandURL( $title->getEditURL() . '?' . $urlSection )
 					);
 					break;
 				case 'view':
 					$title = Title::newFromDBKey( $draft->getTitle() );
 					$out->redirect(
-						wfExpandURL( $title->getFullURL() . $urlSection )
+						wfExpandURL( $title->getFullURL() . '?' . $urlSection )
 					);
 					break;
 			}
