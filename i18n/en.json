@@ -53,5 +53,6 @@
 	"apierror-no-such-draft": "There is no draft by the given draft ID.",
 	"apihelp-loaddrafts-summary": "Load a previously saved draft.",
 	"apihelp-loaddrafts-param-id": "The ID of the draft.",
-	"apierror-approvedrafts-permissions": "You don't have permissions to publish a page."
+	"apierror-approvedrafts-permissions": "You don't have permissions to publish a page.",
+	"drafts-view-approve-permissions-error": "You don't have permissions to view this page."
 }

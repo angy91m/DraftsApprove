@@ -54,5 +54,6 @@
 	"apihelp-loaddrafts-summary": "Carica una bozza salvata in precedenza.",
 	"apihelp-loaddrafts-param-id": "L'ID della bozza.",
 	"apierror-approvedrafts-permissions": "Non hai i permessi per pubblicare una pagina.",
-	"apierror-must-be-draft-owner": "Non puoi salvare una bozza non tua."
+	"apierror-must-be-draft-owner": "Non puoi salvare una bozza non tua.",
+	"drafts-view-approve-permissions-error": "Non hai i permessi per visualizzare questa pagina."
 }
