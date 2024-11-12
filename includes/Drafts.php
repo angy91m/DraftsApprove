@@ -254,27 +254,33 @@ abstract class Drafts {
 				$urlLoad = $draft->getTitle()->getFullURL(
 					'action=edit&draft=' . urlencode( (string)$draft->getID() ) . ($approvePage ? '&wpApproveView=1' : '')
 				);
-				// Build discard link
-				$urlDiscard = SpecialPage::getTitleFor( 'Drafts' )->getFullURL(
-					sprintf( 'discard=%s&token=%s',
-						urlencode( (string)$draft->getID() ),
-						urlencode( $editToken )
-					)
-				);
-				// Build refuse link
-				$urlRefuse = SpecialPage::getTitleFor( 'Drafts' )->getFullURL(
-					sprintf( 'refuse=%s&token=%s',
-						urlencode( (string)$draft->getID() ),
-						urlencode( $editToken )
-					)
-				);
+				if ($approvePage) {
+					// Build refuse link
+					$urlRefuse = SpecialPage::getTitleFor( 'Drafts to approve' )->getFullURL(
+						sprintf( 'refuse=%s&token=%s',
+							urlencode( (string)$draft->getID() ),
+							urlencode( $editToken )
+						)
+					);
+				} else {
+					// Build discard link
+					$urlDiscard = SpecialPage::getTitleFor( 'Drafts' )->getFullURL(
+						sprintf( 'discard=%s&token=%s',
+							urlencode( (string)$draft->getID() ),
+							urlencode( $editToken )
+						)
+					);
+				}
 				// If in edit mode, return to editor
 				if (
 					$wgRequest->getRawVal( 'action' ) === 'edit' ||
 					$wgRequest->getRawVal( 'action' ) === 'submit'
 				) {
-					$urlDiscard .= '&returnto=' . urlencode( 'edit' );
-					$urlRefuse .= '&returnto=' . urlencode( 'edit' );
+					if ($approvePage) {
+						$urlRefuse .= '&returnto=' . urlencode( 'edit' );
+					} else {
+						$urlDiscard .= '&returnto=' . urlencode( 'edit' );
+					}
 				}
 				// Append section to titles and links
 				if ( $draft->getSection() !== null ) {
@@ -289,10 +295,13 @@ abstract class Drafts {
 					}
 					// Modify article link and title
 					$urlLoad .= '&section=' . urlencode( (string)$draft->getSection() );
-					$urlDiscard .= '&section=' .
-						urlencode( (string)$draft->getSection() );
-					$urlRefuse .= '&section=' .
-						urlencode( (string)$draft->getSection() );
+					if ($approvePage) {
+						$urlRefuse .= '&section=' .
+							urlencode( (string)$draft->getSection() );
+					} else {
+						$urlDiscard .= '&section=' .
+							urlencode( (string)$draft->getSection() );
+					}
 				}
 				// Build XML
 				$html .= Xml::openElement( 'tr' );
