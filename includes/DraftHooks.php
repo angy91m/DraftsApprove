@@ -295,12 +295,9 @@ class DraftHooks {
 			$draft->save();
 			if(!empty($request->getText( 'wpDraftPropose' ))) {
 				if ( $status->isOK() ) {
-					$ctx->getOutput()->addWikiTextAsInterface( 'Le tue modifiche sono in fase di verifica' );
 					$title = SpecialPage::getTitleFor('Special:Drafts');
 					$redirectUrl = $title->getFullURL();
-					$editPage->getContext()->getOutput()->redirect( $redirectUrl );
-					// Impedisce ulteriori elaborazioni se necessario
-					return false;
+					header('Location: ' . $title->getFullURL() . '?draftProposed=1');
 				}
 			}
 		}

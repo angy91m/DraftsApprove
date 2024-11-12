@@ -41,21 +41,25 @@ class SpecialDrafts extends SpecialPage {
 			$draft->discard();
 			// Redirect to the article editor or view if returnto was set
 			$section = $request->getIntOrNull( 'section' );
-			$urlSection = $section !== null ? "&section={$section}" : '';
+			$urlSection = $section !== null ? "?section={$section}" : '';
 			switch ( $request->getText( 'returnto' ) ) {
 				case 'edit':
 					$title = Title::newFromDBKey( $draft->getTitle() );
 					$out->redirect(
-						wfExpandURL( $title->getEditURL() . '?' . $urlSection )
+						wfExpandURL( $title->getEditURL() . $urlSection )
 					);
 					break;
 				case 'view':
 					$title = Title::newFromDBKey( $draft->getTitle() );
 					$out->redirect(
-						wfExpandURL( $title->getFullURL() . '?' . $urlSection )
+						wfExpandURL( $title->getFullURL() . $urlSection )
 					);
 					break;
 			}
+		}
+
+		if ($request->getInt( 'draftProposed', 0 )) {
+			$out->addWikiTextAsInterface( 'Le tue modifiche sono in fase di verifica' );
 		}
 
 		$count = Drafts::num();
