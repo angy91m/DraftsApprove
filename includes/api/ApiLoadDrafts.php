@@ -49,7 +49,8 @@ class ApiLoadDrafts extends ApiBase {
 				'text' => $draft->getText(),
 				'summary' => $draft->getSummary(),
 				'scrolltop' => $draft->getScrollTop(),
-				'minoredit' => $draft->getMinorEdit() ? true : false
+				'minoredit' => $draft->getMinorEdit() ? true : false,
+				'status' => $draft->getStatus()
 			]
 		);
 	}

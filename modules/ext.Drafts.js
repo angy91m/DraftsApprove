@@ -203,6 +203,7 @@ function Draft() {
 					if ( draftData.minoredit ) {
 						jQuery( form.wpMinoredit ).prop( 'checked', draftData.minoredit );
 					}
+					jQuery('#wpDraftPropose').prop('disabled', draftData.status == 'proposed');
 				} );
 			} );
 
