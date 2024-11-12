@@ -181,7 +181,11 @@ class DraftHooks {
 		$draft = Draft::newFromID( $request->getInt( 'draft', 0 ) );
 		$isDraftOwner = intval(!$draft->exists() || $draft->getUserID() === $user->getId());
 		$out->addHTML(Xml::element('input', ['id' => 'drafts-approve-is-draft-owner', 'type'=> 'hidden', 'name' => 'is-draft-owner', 'value' => "$isDraftOwner"]));
-		$numDrafts = Drafts::num( $context->getTitle() );
+		if ($request->getInt('wpApproveView') === 1) {
+			$numDrafts = Drafts::num( $context->getTitle(), true, 'proposed' );
+		} else {
+			$numDrafts = Drafts::num( $context->getTitle() );
+		}
 		// Show list of drafts
 		if ( $numDrafts > 0 ) {
 			if ( $request->getRawVal( 'action' ) !== 'submit' ) {
