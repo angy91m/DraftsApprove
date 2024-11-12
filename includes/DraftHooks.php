@@ -218,7 +218,7 @@ class DraftHooks {
 		$request = $ctx->getRequest();
 		if (
 			!$user->isAllowed('drafts-approve')
-			&& empty($request->getText( 'wpDraftPropose' ))
+			&& empty($request->getText('wpDraftPropose'))
 			&& empty($request->getText('wpDraftSave'))
 		) {
 			$ctx->getOutput()->showErrorPage(
@@ -253,7 +253,7 @@ class DraftHooks {
 
 		// This is a no-JS endpoint, no need to do anything here for users w/
 		// JS enabled.
-		if ( $request->getBool( 'wpDraftJSEnabled' ) && empty($request->getText( 'wpDraftPropose' )) && empty($request->getText( 'wpDraftSave' ))) {
+		if ( $request->getBool( 'wpDraftJSEnabled' ) && empty($request->getText( 'wpDraftPropose' ))) {
 			return;
 		}
 
