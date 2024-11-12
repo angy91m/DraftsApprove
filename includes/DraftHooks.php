@@ -219,7 +219,6 @@ class DraftHooks {
 	}
 
 	public static function onBeforeInitialize( &$title, $unused, $output, $user, $request, $mediawiki ) {
-		hSaveTest('CIAO');
 		if ( $request->getVal( 'veaction' ) && !$user->isAllowed('drafts-approve') ) {
 			$output->showErrorPage("apierror-approvedrafts-permissions");
 			return false;
