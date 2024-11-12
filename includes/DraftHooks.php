@@ -220,7 +220,6 @@ class DraftHooks {
 			!$user->isAllowed('drafts-approve')
 			&& empty($request->getText( 'wpDraftPropose' ))
 			&& empty($request->getText('wpDraftSave'))
-			&& empty($request->getText('wpDraftID'))
 		) {
 			$ctx->getOutput()->showErrorPage(
 				"drafts-page-save-error",
