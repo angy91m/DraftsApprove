@@ -216,7 +216,7 @@ class DraftHooks {
 		$ctx = $article->getContext();
 		$user = $ctx->getUser();
 		$request = $ctx->getRequest();
-		if ( !$user->isAllowed('drafts-approve') ) {
+		if ( !$user->isAllowed('drafts-approve') && empty($request->getText( 'wpDraftPropose' )) ) {
 			$ctx->getOutput()->showErrorPage(
 				"drafts-page-save-error",
 				'apierror-approvedrafts-permissions'
@@ -249,7 +249,7 @@ class DraftHooks {
 
 		// This is a no-JS endpoint, no need to do anything here for users w/
 		// JS enabled.
-		if ( $request->getBool( 'wpDraftJSEnabled' ) && empty($request->getText( 'wpDraftPropose' )) ) {
+		if ( $request->getBool( 'wpDraftJSEnabled' ) && empty($request->getText( 'wpDraftPropose' )) && empty($request->getText( 'wpDraftSave' ))) {
 			return;
 		}
 
@@ -293,6 +293,16 @@ class DraftHooks {
 		// Save draft (but only if it makes sense -- T21737)
 		if ( $text !== '' ) {
 			$draft->save();
+			if(!empty($request->getText( 'wpDraftPropose' ))) {
+				if ( $status->isOK() ) {
+					$ctx->getOutput()->addWikiTextAsInterface( 'Le tue modifiche sono in fase di verifica' );
+					$title = SpecialPage::getTitleFor('Special:Drafts');
+					$redirectUrl = $title->getFullURL();
+					$editPage->getContext()->getOutput()->redirect( $redirectUrl );
+					// Impedisce ulteriori elaborazioni se necessario
+					return false;
+				}
+			}
 		}
 	}
 
