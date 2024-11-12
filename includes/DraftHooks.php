@@ -216,7 +216,12 @@ class DraftHooks {
 		$ctx = $article->getContext();
 		$user = $ctx->getUser();
 		$request = $ctx->getRequest();
-		if ( !$user->isAllowed('drafts-approve') && empty($request->getText( 'wpDraftPropose' )) ) {
+		if (
+			!$user->isAllowed('drafts-approve')
+			&& empty($request->getText( 'wpDraftPropose' ))
+			&& empty($request->getText('wpDraftSave'))
+			&& empty($request->getText('wpDraftID'))
+		) {
 			$ctx->getOutput()->showErrorPage(
 				"drafts-page-save-error",
 				'apierror-approvedrafts-permissions'
