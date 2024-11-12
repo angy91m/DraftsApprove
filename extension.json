@@ -107,10 +107,9 @@
 		"ResourceLoaderGetConfigVars": "DraftHooks::onResourceLoaderGetConfigVars",
 		"LoadExtensionSchemaUpdates": "DraftHooks::schema"
 	},
-	"Permissions": {
-		"drafts-approve": {
-			"desc": "Enable Drafts approve",
-			"group": "sysop"
+	"GroupPermissions": {
+		"sysop": {
+			"drafts-approve": true
 		}
 	},
 	"manifest_version": 2
