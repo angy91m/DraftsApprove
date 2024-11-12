@@ -39,27 +39,11 @@ class SpecialDraftsToApprove extends SpecialPage {
         }
 
 		// Handle discarding
-		$draft = Draft::newFromID( $request->getInt( 'discard', 0 ) );
+		$draft = Draft::newFromID( $request->getInt( 'refuse', 0 ) );
 		if ( $draft->exists() ) {
 			// Discard draft
-			$draft->discard();
-			// Redirect to the article editor or view if returnto was set
-			$section = $request->getIntOrNull( 'section' );
-			$urlSection = $section !== null ? "section={$section}" : '';
-			switch ( $request->getText( 'returnto' ) ) {
-				case 'edit':
-					$title = Title::newFromDBKey( $draft->getTitle() );
-					$out->redirect(
-						wfExpandURL( $title->getEditURL() . "?wpApproveView=1&" . $urlSection )
-					);
-					break;
-				case 'view':
-					$title = Title::newFromDBKey( $draft->getTitle() );
-					$out->redirect(
-						wfExpandURL( $title->getFullURL() . "?$urlSection" )
-					);
-					break;
-			}
+			$draft->refuse();
+			$out->redirect(SpecialPage::getTitleFor( 'DraftsToApprove' )->getFullURL());
 		}
 
 		$count = Drafts::num(null, true, 'proposed');
