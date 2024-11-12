@@ -76,8 +76,12 @@ class DraftHooks {
 		// Check if the save occurred from a draft
 		$draft = Draft::newFromID( $wgRequest->getInt( 'wpDraftID', 0 ) );
 		if ( $draft->exists() ) {
-			// Discard the draft
-			$draft->discard( $user );
+			if ($user->isAllowed('drafts-approve')) {
+				$draft->discard($draft->getUserID());
+			} else {
+				// Discard the draft
+				$draft->discard( $user );
+			}
 		}
 
 		// When a page is created, associate the page ID with any drafts that might exist
