@@ -34,7 +34,7 @@ class SpecialDraftsToApprove extends SpecialPage {
 		// Make sure the user is logged in
 		$this->requireLogin();
         if (!$user->isAllowed('drafts-approve')) {
-			$out->addWikiMsg('permissiondenied');
+			$out->addWikiMsg("drafts-view-approve-permissions-error");
             return;
         }
 
