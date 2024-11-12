@@ -297,7 +297,7 @@ class DraftHooks {
 				if ( $status->isOK() ) {
 					$title = SpecialPage::getTitleFor('Special:Drafts');
 					$redirectUrl = $title->getFullURL();
-					$ctx->getOuput()->redirect(wfExpandURL( $title->getFullURL() . '?draftProposed=1' ));
+					header('Location: ' . $title->getFullURL() . '?draftProposed=1');
 				}
 			}
 		}

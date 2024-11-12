@@ -23,6 +23,7 @@
 	"drafts-view-status-refused": "Rifiutata",
 	"drafts-view-status-proposed": "Proposta",
 	"drafts-view-status-approved": "Approvata",
+	"drafts-view-status-editing": "In modifica",
 	"drafts-view-nonesaved": "Non hai alcuna bozza salvata al momento.",
 	"drafts-view-notice": "Hai $1 per questa pagina.",
 	"drafts-view-notice-link": "$1 {{PLURAL:$1|bozza|bozze}}",
