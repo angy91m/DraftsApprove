@@ -196,7 +196,7 @@ function Draft() {
 					formatversion: 2
 				} ).done( function ( response ) {
 					var draftData = response.loaddrafts;
-					jQuery( form.wpDraftID ).val( jQuery( this ).data( 'draft-id' ) );
+					jQuery( form.wpDraftID ).val( parseInt(jQuery( this ).data( 'draft-id' ), 10) );
 					jQuery( form.wpTextbox1 ).val( draftData.text );
 					jQuery( form.wpSummary ).val( draftData.summary );
 					jQuery( form.wpScrolltop ).val( draftData.scrolltop );
