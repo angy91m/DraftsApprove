@@ -237,7 +237,7 @@ function Draft() {
 			self.setState( 'saved' );
 			// Gets id of newly inserted draft (or updates if it already exists)
 			// and stores it in a hidden form field
-			form.wpDraftID.value = data.savedrafts.id;
+			jQuery(form.wpDraftID).val( data.savedrafts.id );
 		} else {
 			// Changes state to error
 			self.setState( 'error' );
