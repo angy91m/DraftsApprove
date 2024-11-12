@@ -190,13 +190,14 @@ function Draft() {
 				event.preventDefault();
 				// Fetch draft information from the server, including but certainly
 				// not limited to just its text
+				let draftId = jQuery( this ).data( 'draft-id' );
 				( new mediaWiki.Api() ).postWithEditToken( {
 					action: 'loaddrafts',
-					id: jQuery( this ).data( 'draft-id' ),
+					id: draftId,
 					formatversion: 2
 				} ).done( function ( response ) {
 					var draftData = response.loaddrafts;
-					jQuery( form.wpDraftID ).val( parseInt(jQuery( this ).data( 'draft-id' ), 10) );
+					jQuery( form.wpDraftID ).val( draftId );
 					jQuery( form.wpTextbox1 ).val( draftData.text );
 					jQuery( form.wpSummary ).val( draftData.summary );
 					jQuery( form.wpScrolltop ).val( draftData.scrolltop );
