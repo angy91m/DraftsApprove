@@ -255,7 +255,7 @@ abstract class Drafts {
 					'action=edit&draft=' . urlencode( (string)$draft->getID() ) . ($approvePage ? '&wpApproveView=1' : '')
 				);
 				// Build refuse link
-				$urlRefuse = SpecialPage::getTitleFor( 'Drafts to approve' )->getFullURL(
+				$urlRefuse = SpecialPage::getTitleFor( 'DraftsToApprove' )->getFullURL(
 					sprintf( 'refuse=%s&token=%s',
 						urlencode( (string)$draft->getID() ),
 						urlencode( $editToken )
