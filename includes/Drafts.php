@@ -57,13 +57,15 @@ abstract class Drafts {
 			}
 		}
 
-		// Checks if specific user was given
-		if ( $userID !== null ) {
-			// Adds specific user to condition
-			$where['draft_user'] = $userID;
-		} else {
-			// Adds current user as condition
-			$where['draft_user'] = RequestContext::getMain()->getUser()->getId();
+		if ($userID !== true) {
+			// Checks if specific user was given
+			if ( $userID !== null ) {
+				// Adds specific user to condition
+				$where['draft_user'] = $userID;
+			} else {
+				// Adds current user as condition
+				$where['draft_user'] = RequestContext::getMain()->getUser()->getId();
+			}
 		}
 
 		// Checks if specific draftStatus was given
@@ -195,16 +197,17 @@ abstract class Drafts {
 	 * Outputs a table of existing drafts
 	 *
 	 * @param Title|null $title Title of article, defaults to all articles
-	 * @param int|null $userID ID of user, defaults to current user
+	 * @param int|null|bool $userID ID of user, defaults to current user
+	 * @param string|null $draftStatus ID of user, defaults all statuses
 	 * @return string HTML to be shown to the user
 	 */
-	public static function display( $title = null, $userID = null ) {
+	public static function display( $title = null, $userID = null, $draftStatus = null ) {
 		global $wgRequest;
 
 		// Gets draftID
 		$currentDraft = Draft::newFromID( $wgRequest->getInt( 'draft', 0 ) );
 		// Output HTML for list of drafts
-		$drafts = self::get( $title, $userID );
+		$drafts = self::get( $title, $userID, $draftStatus );
 		if ( $drafts !== null ) {
 			$html = '';
 			$context = RequestContext::getMain();
@@ -232,6 +235,10 @@ abstract class Drafts {
 				null,
 				wfMessage( 'drafts-view-saved' )->text()
 			);
+			$html .= Xml::element( 'th',
+				null,
+				wfMessage("drafts-view-status")->text()
+			);
 			$html .= Xml::element( 'th' );
 			$html .= Xml::closeElement( 'tr' );
 			// Add existing drafts for this page and user
@@ -239,6 +246,7 @@ abstract class Drafts {
 			 * @var $draft Draft
 			 */
 			foreach ( $drafts as $draft ) {
+				$user = User::newFromId($draft->getUserID());
 				// Get article title text
 				$htmlTitle = htmlspecialchars( $draft->getTitle()->getPrefixedText() );
 				// Build Article Load link
@@ -295,6 +303,10 @@ abstract class Drafts {
 				$html .= Xml::element( 'td',
 					null,
 					$lang->getHumanTimestamp( MWTimestamp::getInstance( $draft->getSaveTime() ), null, $user )
+				);
+				$html .= Xml::element( 'td',
+					null,
+					wfMessage("drafts-view-status-" . $draft->getStatus())->text()
 				);
 				$html .= Xml::openElement( 'td' );
 				$html .= Xml::element( 'a',
