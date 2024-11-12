@@ -103,7 +103,7 @@
 		"EditPageBeforeEditButtons": "DraftHooks::onEditPageBeforeEditButtons",
 		"EditPage::showEditForm:initial": "DraftHooks::loadForm",
 		"EditPage::attemptSave": "DraftHooks::onEditPage__attemptSave",
-		"VisualEditorApiVisualEditorEditPreSave": "DraftHooks::onVisualEditorAttemptSave",
+		"BeforeInitialize": "DraftHooks::visualEditorBeforeInitialize",
 		"EditPage::attemptSave:after": "DraftHooks::onEditPage__attemptSave_after",
 		"ResourceLoaderGetConfigVars": "DraftHooks::onResourceLoaderGetConfigVars",
 		"LoadExtensionSchemaUpdates": "DraftHooks::schema"
