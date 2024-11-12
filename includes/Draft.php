@@ -433,7 +433,7 @@ class Draft {
 		$dbw->update(
 			'drafts',
 			[
-				'status' => 'refused'
+				'draft_status' => 'refused'
 			],
 			[
 				'draft_id' => $this->id
