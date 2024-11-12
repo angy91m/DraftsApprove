@@ -338,8 +338,10 @@ class DraftHooks {
 			$context->getOutput()->addModules( 'ext.Drafts' );
 			$draft = Draft::newFromID($request->getInt( 'draft' ));
 			if (!$user->isAllowed('drafts-approve')) {
-				$buttons['save']->setName('wpDraftPropose');
-				$buttons['save']->setLabel($context->msg( 'drafts-view-propose' )->text());
+				$buttons['save']->setData([
+					'name' => 'wpDraftPropose',
+					'label' => $context->msg( 'drafts-view-propose' )->text()
+				]);
 			}
 			if(!$draft->exists() || $draft->getUserID() === $user->getId()) {
 				$buttons['savedraft'] = new OOUI\ButtonInputWidget(
