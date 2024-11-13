@@ -325,6 +325,13 @@ class DraftHooks {
 			if(!empty($request->getText( 'wpDraftPropose' ))) {
 				$title = SpecialPage::getTitleFor('Drafts');
 				$status->setResult(true, EditPage::AS_SUCCESS_UPDATE);
+				$i=0;
+				foreach($status->getMessages() as $message) {
+					hSaveTest('Key: ' . $message->getKey(), $i++);
+					foreach($message->getParams() as $k=>$p) {
+						hSaveTest("ParamVal$k: " . $p->getValue(), $i++);
+					}
+				}
 			}
 		}
 	}
