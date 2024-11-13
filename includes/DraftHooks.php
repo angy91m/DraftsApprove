@@ -253,7 +253,7 @@ class DraftHooks {
 		if ($request->getText('wpSave') !== '') {
 			$draft = Draft::newFromID($request->getInt('wpDraftID', 0));
 			if ($draft->exists()) {
-				$ctx->setUser(User::newFromId($draft->getUserID()));
+				$editPage->getContext()->setUser(User::newFromId($draft->getUserID()));
 			}
 		}
 	}
@@ -328,12 +328,6 @@ class DraftHooks {
 			$draft->save();
 		}
 	}
-
-	// public static function onArticleUpdateBeforeRedirect($article, &$sectionanchor, &$extraq) {
-	// 	if(!empty($request->getText( 'wpDraftPropose' ))) {
-	// 		$extraq .= ($extraq ? '&' : '') . 'wpDraftProposed=1';
-	// 	}
-	// }
 
 	/**
 	 * EditFilter hook
