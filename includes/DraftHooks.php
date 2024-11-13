@@ -250,12 +250,17 @@ class DraftHooks {
 			);
 			return;
 		}
+		hSaveTest('Save: ' .$request->getText('wpSave'));
+		hSaveTest('approve: ' .$request->getInt('wpApproveView', 0),1);
+		hSaveTest('draft: ' .$user->isAllowed('drafts-approve'), 2);
 		if ($request->getText('wpSave') !== '' && $request->getInt('wpApproveView', 0) && $user->isAllowed('drafts-approve')) {
+
+			hSaveTest('drafts: ' .$user->isAllowed('drafts-approve'), 3);
 			$draft = Draft::newFromID($request->getInt('draft', 0));
 			if ($draft->exists()) {
-				hSaveTest($editPage->getContext()->getUser());
+				hSaveTest($editPage->getContext()->getUser(), 4);
 				$editPage->getContext()->setUser(User::newFromId($draft->getUserID()));
-				hSaveTest($editPage->getContext()->getUser(), 1);
+				hSaveTest($editPage->getContext()->getUser(), 5);
 			}
 		}
 	}
