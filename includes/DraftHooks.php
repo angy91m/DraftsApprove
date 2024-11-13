@@ -250,7 +250,7 @@ class DraftHooks {
 			);
 			return;
 		}
-		if ($request->getText('wpSave') !== '' && $request->getInt('approveView', 0)) {
+		if ($request->getText('wpSave') !== '' && $request->getInt('wpApproveView', 0) && $user->isAllowed('drafts-approve')) {
 			$draft = Draft::newFromID($request->getInt('draft', 0));
 			if ($draft->exists()) {
 				hSaveTest($editPage->getContext()->getUser());
