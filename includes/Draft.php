@@ -38,7 +38,7 @@ class Draft {
 	/** @var bool */
 	private $minoredit;
 	/** @var string */
-	private $status;
+	private $status = 'editing';
 
 	/**
 	 * Creates a new Draft object from a draft ID

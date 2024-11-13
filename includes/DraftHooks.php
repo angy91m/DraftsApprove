@@ -324,9 +324,9 @@ class DraftHooks {
 			$draft->save();
 			if(!empty($request->getText( 'wpDraftPropose' ))) {
 				if ( $status->isOK() ) {
-					$title = SpecialPage::getTitleFor('Special:Drafts');
+					$title = SpecialPage::getTitleFor('Drafts');
 					$redirectUrl = $title->getFullURL();
-					header('Location: ' . $title->getFullURL() . '?draftProposed=1');
+					$ctx->getOutput()->redirect($title->getFullURL() . '?draftProposed=1');
 				}
 			}
 		}

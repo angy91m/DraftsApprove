@@ -30,13 +30,12 @@ abstract class Drafts {
 	 * @return int Number of drafts which match condition parameters
 	 */
 	public static function num( $title = null, $userID = null, $draftStatus = null ) {
+		// self::clean();
 		// Get database connection
 		$dbr = MediaWikiServices::getInstance()->getDBLoadBalancer()->getConnection( DB_REPLICA );
 
 		// Builds where clause
-		$where = [
-			'draft_status <> ""'
-		];
+		$where = [];
 
 		// Checks if a specific title was given
 		if ( $title !== null ) {
@@ -80,8 +79,8 @@ abstract class Drafts {
 	 * Removes drafts which have not been modified for a period of time defined
 	 * by $egDraftsCleanRatio
 	 */
-	public static function clean() {
-		global $egDraftsCleanRatio;
+	public static function clean($user = null) {
+		// global $egDraftsCleanRatio;
 
 		// // Only perform this action a fraction of the time
 		// if ( rand( 0, $egDraftsCleanRatio ) == 0 ) {
@@ -98,20 +97,19 @@ abstract class Drafts {
 		// 		__METHOD__
 		// 	);
 		// }
-		
-		if ( rand( 0, $egDraftsCleanRatio ) == 0 ) {
-			$dbw = MediaWikiServices::getInstance()->getDBLoadBalancer()->getConnection( DB_PRIMARY );
-			// Removes expired drafts from database
-			$dbw->update( 'drafts',
-				[
-					'draft_status = "editing"'
-				],
-				[
-					'draft_status = ""'
-				],
-				__METHOD__
-			);
+		$where = ['draft_status = ""'];
+		if ($user !== true) {
+			$where[] = 'draft_user = ' . ($user ? $user->getId() : RequestContext::getMain()->getUser()->getId());
 		}
+		$dbw = MediaWikiServices::getInstance()->getDBLoadBalancer()->getConnection( DB_PRIMARY );
+		// Removes expired drafts from database
+		$dbw->update( 'drafts',
+			[
+				'draft_status = "editing"'
+			],
+			$where,
+			__METHOD__
+		);
 	}
 
 	/**
@@ -147,15 +145,13 @@ abstract class Drafts {
 	 */
 	public static function get( $title = null, $userID = null, $draftStatus = null ) {
 		// Removes expired drafts for a more accurate list
-		self::clean();
+		// self::clean();
 
 		// Gets database connection
 		$dbw = MediaWikiServices::getInstance()->getDBLoadBalancer()->getConnection( DB_PRIMARY );
 
 		// Builds where clause
-		$where = [
-			'draft_status <> ""'
-		];
+		$where = [];
 
 		// Checks if specific title was given
 		if ( $title !== null ) {
