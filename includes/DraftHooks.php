@@ -256,6 +256,7 @@ class DraftHooks {
 				$editPage->getContext()->setUser(User::newFromId($draft->getUserID()));
 				hSaveTest($editPage->getContext()->getUser());
 			}
+			hSaveTest($editPage->getContext()->getUser(), 1);
 		}
 	}
 	/**
