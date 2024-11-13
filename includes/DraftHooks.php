@@ -250,8 +250,8 @@ class DraftHooks {
 			);
 			return;
 		}
-		if ($request->getText('wpSave') !== '' && $request->getInt('wpApprove', 0) && $user->isAllowed('drafts-approve')) {
-			$draft = Draft::newFromID($request->getInt('wpApprove', 0));
+		if ($request->getText('wpSave') !== '' && $request->getInt('wpDraftApprove', 0) && $user->isAllowed('drafts-approve')) {
+			$draft = Draft::newFromID($request->getInt('wpDraftApprove', 0));
 			if ($draft->exists()) {
 				hSaveTest($editPage->getContext()->getUser(), 4);
 				$editPage->getContext()->setUser(User::newFromId($draft->getUserID()));
@@ -439,7 +439,7 @@ class DraftHooks {
 				$buttons['save']->setLabel($context->msg("drafts-view-approve")->text());
 				$buttons['save'] .= new OOUI\HiddenInputWidget(
 					[
-						'name' => 'wpApprove',
+						'name' => 'wpDraftApprove',
 						'value' => $request->getInt( 'draft' )
 					]
 				);
