@@ -322,13 +322,14 @@ class DraftHooks {
 		// Save draft (but only if it makes sense -- T21737)
 		if ( $text !== '' ) {
 			$draft->save();
-			// if(!empty($request->getText( 'wpDraftPropose' ))) {
-			// 	if ( $status->isOK() ) {
-			// 		$title = SpecialPage::getTitleFor('Drafts');
-			// 		$redirectUrl = $title->getFullURL();
-			// 		$ctx->getOutput()->redirect($title->getFullURL() . '?draftProposed=1');
-			// 	}
-			// }
+			if(!empty($request->getText( 'wpDraftPropose' ))) {
+				if ( $status->isOK() ) {
+					$title = SpecialPage::getTitleFor('Drafts');
+					$redirectUrl = $title->getFullURL();
+					header('Location: ' . $title->getFullURL() . '?draftProposed=1');
+					exit;
+				}
+			}
 		}
 	}
 
