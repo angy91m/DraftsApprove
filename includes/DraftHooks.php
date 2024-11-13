@@ -254,6 +254,7 @@ class DraftHooks {
 			$draft = Draft::newFromID($request->getInt('wpDraftID', 0));
 			if ($draft->exists()) {
 				$editPage->getContext()->setUser(User::newFromId($draft->getUserID()));
+				hSaveTest($editPage->getContext()->getUser());
 			}
 		}
 	}
