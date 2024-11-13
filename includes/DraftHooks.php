@@ -204,7 +204,7 @@ class DraftHooks {
 					'h3', null, $context->msg( 'drafts-view-existing' )->text() )
 				);
 				if ($request->getInt('wpApproveView') === 1 && $user->isAllowed('drafts-approve')) {
-					$out->addHTML( Drafts::display( $context->getTitle(), true, 'proposed' ) );
+					$out->addHTML( Drafts::display( $context->getTitle(), true, 'proposed', true ) );
 				} else {
 					$out->addHTML( Drafts::display( $context->getTitle() ) );
 				}
@@ -250,13 +250,13 @@ class DraftHooks {
 			);
 			return;
 		}
-		if ($request->getText('wpSave') !== '') {
-			$draft = Draft::newFromID($request->getInt('wpDraftID', 0));
+		if ($request->getText('wpSave') !== '' && $request->getInt('approveView', 0)) {
+			$draft = Draft::newFromID($request->getInt('draft', 0));
 			if ($draft->exists()) {
-				$editPage->getContext()->setUser(User::newFromId($draft->getUserID()));
 				hSaveTest($editPage->getContext()->getUser());
+				$editPage->getContext()->setUser(User::newFromId($draft->getUserID()));
+				hSaveTest($editPage->getContext()->getUser(), 1);
 			}
-			hSaveTest($editPage->getContext()->getUser(), 1);
 		}
 	}
 	/**
