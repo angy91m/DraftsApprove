@@ -255,7 +255,7 @@ class DraftHooks {
 			if ($draft->exists()) {
 				hSaveTest($editPage->getContext()->getUser(), 4);
 				//$editPage->getContext()->setUser(User::newFromId($draft->getUserID()));
-				$user = UserFactory::newFromId($draft->getUserID());
+				$user = User::newFromId($draft->getUserID());
 				$user->loadFromId();
 				hSaveTest($user, 5);
 			}
