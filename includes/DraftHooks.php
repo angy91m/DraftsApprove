@@ -113,10 +113,14 @@ class DraftHooks {
 		if ( !$userOptionsManager->getOption( $user, 'extensionDrafts_enable', 'true' ) ) {
 			return;
 		}
-
 		// Check permissions
 		$request = $context->getRequest();
 		if ( $user->isAllowed( 'edit' ) && $user->isRegistered() ) {
+			if(!empty($request->getText( 'wpDraftPropose' ))) {
+				$out = $context->getOutput();
+				$out->clearHTML();
+				$out->redirect(SpecialPage::getTitleFor('Drafts')->getFullURL('proposed=1'));
+			}
 			// Get draft
 			$draft = Draft::newFromID( $request->getInt( 'draft', 0 ) );
 			// Load form values
@@ -322,19 +326,14 @@ class DraftHooks {
 		// Save draft (but only if it makes sense -- T21737)
 		if ( $text !== '' ) {
 			$draft->save();
-			if(!empty($request->getText( 'wpDraftPropose' ))) {
-				$title = SpecialPage::getTitleFor('Drafts');
-				$status->setResult(true, EditPage::AS_SUCCESS_UPDATE);
-				$i=0;
-				foreach($status->getMessages() as $message) {
-					hSaveTest('Key: ' . $message->getKey(), $i++);
-					foreach($message->getParams() as $k=>$p) {
-						hSaveTest("ParamVal$k: " . $p->getValue(), $i++);
-					}
-				}
-			}
 		}
 	}
+
+	// public static function onArticleUpdateBeforeRedirect($article, &$sectionanchor, &$extraq) {
+	// 	if(!empty($request->getText( 'wpDraftPropose' ))) {
+	// 		$extraq .= ($extraq ? '&' : '') . 'wpDraftProposed=1';
+	// 	}
+	// }
 
 	/**
 	 * EditFilter hook
