@@ -323,12 +323,8 @@ class DraftHooks {
 		if ( $text !== '' ) {
 			$draft->save();
 			if(!empty($request->getText( 'wpDraftPropose' ))) {
-				if ( $status->isOK() ) {
-					$title = SpecialPage::getTitleFor('Drafts');
-					$status->setResult(true, EditPage::AS_SELF_REDIRECT);
-					$ctx->getOutput()->redirect($title->getFullURL() . '?draftProposed=1');
-					exit;
-				}
+				$title = SpecialPage::getTitleFor('Drafts');
+				$status->setResult(true, EditPage::AS_SUCCESS_UPDATE);
 			}
 		}
 	}
