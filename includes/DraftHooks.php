@@ -10,6 +10,7 @@ use MediaWiki\MediaWikiServices;
 use MediaWiki\User\UserIdentity;
 
 class DraftHooks {
+	private static ?object $draftApprover;
 	/**
 	 * Enable the Drafts preference by default for new user accounts (as well as
 	 * old ones that haven't explicitly disabled Drafts).
@@ -73,19 +74,29 @@ class DraftHooks {
 	public static function onPageSaveComplete( WikiPage $wikiPage, UserIdentity $user ) {
 		global $wgRequest;
 
-		if ($wgRequest->getInt('wpDraftApprove', 0)) {
-			hSaveTest($user);
+		$draft = false;
+		if (isset(self::$draftApprover)) {
+			$user = self::$draftApprover;
+			$draft = Draft::newFromID( $wgRequest->getInt( 'wpDraftApprove', 0 ) );
+			unset(self::$draftApprover);
+		} else {
+			$draft = Draft::newFromID( $wgRequest->getInt( 'wpDraftID', 0 ) );
 		}
-		// Check if the save occurred from a draft
-		$draft = Draft::newFromID( $wgRequest->getInt( 'wpDraftID', 0 ) );
-		if ( $draft->exists() ) {
-			if ($user->isAllowed('drafts-approve')) {
+		if ( $user->isAllowed('drafts-approve') ) {
+			if ( $draft->exists() ) {
 				$draft->discard($draft->getUserID());
-			} else {
-				// Discard the draft
-				$draft->discard( $user );
 			}
 		}
+		// // Check if the save occurred from a draft
+		// $draft = Draft::newFromID( $wgRequest->getInt( 'wpDraftID', 0 ) );
+		// if ( $draft->exists() ) {
+		// 	if ($user->isAllowed('drafts-approve')) {
+		// 		$draft->discard($draft->getUserID());
+		// 	} else {
+		// 		// Discard the draft
+		// 		$draft->discard( $user );
+		// 	}
+		// }
 
 		// When a page is created, associate the page ID with any drafts that might exist
 		$title = $wikiPage->getTitle();
@@ -258,6 +269,7 @@ class DraftHooks {
 			if ($draft->exists()) {
 				$user = User::newFromId($draft->getUserID());
 				$user->loadFromId();
+				self::$draftApprover = $editPage->getContext()->getUser();
 				$editPage->getContext()->setUser(User::newFromId($draft->getUserID()));
 			}
 		}
