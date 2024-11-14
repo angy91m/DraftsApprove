@@ -10,7 +10,7 @@ use MediaWiki\MediaWikiServices;
 use MediaWiki\User\UserIdentity;
 
 class DraftHooks {
-	private static ?object $draftApprover;
+	private static $draftApprover = null;
 	/**
 	 * Enable the Drafts preference by default for new user accounts (as well as
 	 * old ones that haven't explicitly disabled Drafts).
@@ -75,16 +75,13 @@ class DraftHooks {
 		global $wgRequest;
 
 		$draft = false;
-		if (isset(self::$draftApprover)) {
-			hSaveTest(self::$draftApprover,1);
+		if (self::$draftApprover) {
 			$user = self::$draftApprover;
 			$draft = Draft::newFromID( $wgRequest->getInt( 'wpDraftApprove', 0 ) );
-			unset(self::$draftApprover);
+			self::$draftApprover = null;
 		} else {
 			$draft = Draft::newFromID( $wgRequest->getInt( 'wpDraftID', 0 ) );
 		}
-		hSaveTest($draft,2);
-		hSaveTest($draft->exists(),3);
 		if ( $user->isAllowed('drafts-approve') ) {
 			if ( $draft->exists() ) {
 				$draft->discard($draft->getUserID());
