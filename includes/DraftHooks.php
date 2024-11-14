@@ -76,12 +76,15 @@ class DraftHooks {
 
 		$draft = false;
 		if (isset(self::$draftApprover)) {
+			hSaveTest(self::$draftApprover,1);
 			$user = self::$draftApprover;
 			$draft = Draft::newFromID( $wgRequest->getInt( 'wpDraftApprove', 0 ) );
 			unset(self::$draftApprover);
 		} else {
 			$draft = Draft::newFromID( $wgRequest->getInt( 'wpDraftID', 0 ) );
 		}
+		hSaveTest($draft,2);
+		hSaveTest($draft->exists(),3);
 		if ( $user->isAllowed('drafts-approve') ) {
 			if ( $draft->exists() ) {
 				$draft->discard($draft->getUserID());
@@ -270,6 +273,7 @@ class DraftHooks {
 				$user = User::newFromId($draft->getUserID());
 				$user->loadFromId();
 				self::$draftApprover = $editPage->getContext()->getUser();
+				hSaveTest(self::$draftApprover);
 				$editPage->getContext()->setUser(User::newFromId($draft->getUserID()));
 			}
 		}
