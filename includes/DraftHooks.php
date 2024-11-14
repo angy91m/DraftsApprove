@@ -253,11 +253,11 @@ class DraftHooks {
 		if ($request->getText('wpSave') !== '' && $request->getInt('wpDraftApprove', 0) && $user->isAllowed('drafts-approve')) {
 			$draft = Draft::newFromID($request->getInt('wpDraftApprove', 0));
 			if ($draft->exists()) {
-				hSaveTest($editPage->getContext()->getUser(), 4);
-				//$editPage->getContext()->setUser(User::newFromId($draft->getUserID()));
+				//hSaveTest($editPage->getContext()->getUser(), 4);
 				$user = User::newFromId($draft->getUserID());
 				$user->loadFromId();
-				hSaveTest($user, 5);
+				$editPage->getContext()->setUser(User::newFromId($draft->getUserID()));
+				//hSaveTest($user, 5);
 			}
 		}
 	}
