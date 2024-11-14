@@ -82,7 +82,6 @@ class DraftHooks {
 		} else {
 			$draft = Draft::newFromID( $wgRequest->getInt( 'wpDraftID', 0 ) );
 		}
-		hSaveTest($draft->exists());
 		if ( $user->isAllowed('drafts-approve') ) {
 			if ( $draft->exists() ) {
 				$draft->discard(User::newFromId($draft->getUserID()));
