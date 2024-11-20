@@ -1,6 +1,12 @@
 /* JavaScript for Drafts extension */
 var isDraftOwner = document.getElementById('drafts-approve-is-draft-owner');
 if (isDraftOwner) isDraftOwner = parseInt(isDraftOwner.value, 10);
+if (!isDraftOwner) {
+	document.getElementById('wpTextbox1').disabled = true;
+}
+
+const params = (new URL(location)).searchParams;
+document.getElementById('editform').action += '?'+ params.toString();
 var wgDraft;
 
 function Draft() {
